@@ -25,17 +25,17 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.PASSWORD }}
 
-      - name: Build and push Docker image
+     - name: Update TinyMCE
         run: |
+          docker-compose run web sh -c "curl -L https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js -o /usr/share/nginx/html/tinymce.min.js"
+          docker-compose run web sh -c "echo '<script src=\"tinymce.min.js\"></script>' > /usr/share/nginx/html/index.html"
 
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose build
-          docker-compose require tinymce/tinymce
+      - name: Commit and push changes
+        run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add package*.json
-          git commit -m "Daily Build: Upgrade TinyMCE to latest version"
+          git add .
+          git commit -m "Daily Build: Update TinyMCE to latest version" || echo "No changes to commit"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.PASSWORD }}
