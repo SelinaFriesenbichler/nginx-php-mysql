@@ -28,10 +28,7 @@ jobs:
       - name: Build and push Docker image
         run: |
 
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose run web sh -c "curl -L https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js -o /usr/share/nginx/html/tinymce.min.js"
-          docker-compose run web sh -c "echo '<script src=\"tinymce.min.js\"></script>' > /usr/share/nginx/html/index.html"
+          compose require tinymce/tinymce
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add package*.json
