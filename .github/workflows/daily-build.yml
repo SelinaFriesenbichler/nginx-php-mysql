@@ -29,6 +29,7 @@ jobs:
         npm outdated tinymce
         # Or run your project's tests to ensure everything is working
         npm test
+      working-directory: ./nginx-php-mysql/src/vendor
 
     - name: Commit and push changes
       if: success()
