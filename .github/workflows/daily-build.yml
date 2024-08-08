@@ -21,7 +21,7 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: nginx-php-mysql
+          registry: nginx-php-mysql-nginx 
           username: ${{ github.repository_owner }}
           password: ${{ secrets.PASSWORD }}
 
