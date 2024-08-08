@@ -21,18 +21,18 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.ioWi
+          registry: nginx-php-mysql
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.PASSWORD }}
 
       - name: Build and push Docker image
         run: |
           docker-compose build
-          docker-compose run app npm install tinymce@latest
+          docker-compose rrequire tinymce/tinymce
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add package*.json
           git commit -m "Daily Build: Upgrade TinyMCE to latest version"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PASSWORD }}
