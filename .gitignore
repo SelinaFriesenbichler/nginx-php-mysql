@@ -1,0 +1,81 @@
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.egg-info/
+*.egg
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+*.iml
+.idea/
+
+# PHP
+vendor/
+*.log
+
+# Ruby
+*.gem
+/.bundle
+/log/
+tmp/
+*.rbc
+capybara-*.html
+.rvmrc
+.rbenv-vars
+
+# Go
+bin/
+vendor/
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs_analysis.dat
+*.njsproj
+*.sln
+*.swp
+
+# Miscellaneous
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.swn
+*.orig
+*.rej
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+
+
+# MySQL spezifische Dateien
+database/mysql/*.sock
+database/mysql/*.cnf
+database/mysql/*.index
+database/mysql/ib_buffer_pool

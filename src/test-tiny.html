@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyMCE with MinIO (AWS SDK)</title>
+    <script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+
+<textarea id="editor"></textarea>
+<button id="save-button">Save Images</button> <!-- Save button for uploading images -->
+
+<script>
+let imageBlobs = []; // Array to hold image blobs
+
+tinymce.init({
+    selector: '#editor',
+    plugins: 'image code',
+    toolbar: 'undo redo | link image | code',
+    automatic_uploads: true,
+    images_upload_handler: function (blobInfo, success, failure) {
+        const blob = blobInfo.blob();
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            const img = new Image();
+            img.src = event.target.result;
+
+            // Store the blob for later uploading
+            imageBlobs.push(blob);
+
+            // Insert the image into the editor
+            success(event.target.result);
+        };
+
+        reader.readAsDataURL(blob);
+    }
+});
+
+// Handle the Save Images button click
+document.getElementById('save-button').addEventListener('click', function () {
+    if (imageBlobs.length === 0) {
+        alert('No images to save.');
+        return;
+    }
+
+    // Upload each blob to the server
+    const uploadPromises = imageBlobs.map((blob, index) => {
+        const fileName = 'image' + (index + 1) + '.png'; // You can change the naming convention as needed
+        return uploadImage(blob, fileName);
+    });
+
+    // Wait for all uploads to finish
+    Promise.all(uploadPromises)
+        .then(results => {
+            results.forEach(result => {
+                console.log('Image uploaded successfully:', result);
+            });
+            alert('All images uploaded successfully!');
+        })
+        .catch(error => {
+            console.error('Error uploading images:', error);
+            alert('Failed to upload images. See console for details.');
+        });
+
+    // Clear the blobs after uploading
+    imageBlobs = [];
+});
+
+// Function to upload the image to the server
+function uploadImage(file, fileName) {
+    return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'upload.php', true);
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                try {
+                    const json = JSON.parse(xhr.responseText);
+                    if (json && typeof json.location === 'string') {
+                        resolve(json.location); // Resolve with the image URL
+                    } else {
+                        reject(new Error('Invalid JSON response: ' + xhr.responseText));
+                    }
+                } catch (e) {
+                    reject(new Error('JSON Parse Error: ' + xhr.responseText));
+                }
+            } else {
+                reject(new Error('HTTP Error: ' + xhr.status));
+            }
+        };
+
+        xhr.onerror = function () {
+            reject(new Error('Network Error'));
+        };
+
+        var formData = new FormData();
+        formData.append('file', file, fileName); // Use the specified file name
+
+        xhr.send(formData);
+    });
+}
+</script>
+
+</body>
+</html>
